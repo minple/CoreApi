@@ -20,34 +20,82 @@ namespace CoreApi.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public IQueryable GetUsersAddresses()
+        [HttpGet("page")]
+        public ActionResult GetUsersAddresses([FromQuery(Name = "size")] int PageSize, [FromQuery(Name = "current")] int CurrentPage)
         {
-            IQueryable result = from a in _context.Address
-                                from u in _context.Users
-                                where (
-                                    a.Id == u.Address1 ||
-                                    a.Id == u.Address2
-                                )
-                                from c in _context.Country
-                                from ci in _context.City
-                                from d in _context.District
-                                from at in _context.AddressType
-                                where a.CountryId == c.Id &&
-                                        a.CityId == ci.Id &&
-                                        a.DistrictId == d.Id &&
-                                        a.AddressTypeId == at.Id
-                                select new
-                                {
-                                    UserName = u.Name,
-                                    Street = a.Street,
-                                    AddressType = at.Name,
-                                    District = d.Name,
-                                    City = ci.Name,
-                                    Country = c.Name,
-                                };
-            return result;
+
+            ActionResult Response = Unauthorized();
+
+            var result = (from a in _context.Address
+                          from u in _context.Users
+                          where (
+                              a.Id == u.Address1 ||
+                              a.Id == u.Address2
+                          )
+                          from c in _context.Country
+                          from ci in _context.City
+                          from d in _context.District
+                          from at in _context.AddressType
+                          where a.CountryId == c.Id &&
+                                  a.CityId == ci.Id &&
+                                  a.DistrictId == d.Id &&
+                                  a.AddressTypeId == at.Id
+                          orderby u.Id
+                          select new
+                          {
+                              UserId = u.Id,
+                              UserName = u.Name,
+                              Street = a.Street,
+                              AddressType = at.Name,
+                              District = d.Name,
+                              City = ci.Name,
+                              Country = c.Name,
+                          });
+            var resultPagination = result.Skip((CurrentPage - 1) * PageSize).Take(PageSize);
+            
+            Pagination Pagination = new Pagination();
+            Error Error = new Error();
+            try
+            {
+                
+                if (PageSize > 20)
+                    PageSize = 20;
+                Pagination.PageSize = PageSize;
+                Pagination.PageNumber = CurrentPage;
+                Pagination.TotalItems = result.Count();
+
+                if (result.Count() > 0)
+                {
+                    Error.Id = 100;
+                    Error.Message = "Success!";
+                    Response = Ok(new {
+                        UserAddress = resultPagination,
+                        Error = Error,
+                        Pagination = Pagination
+                    });
+                }
+                else
+                {
+                    Error.Id = 500;
+                    Error.Message = "No Success! Please check your infomation that you sent!";
+                    Pagination = null;
+                }
+            }
+            catch (Exception e)
+            {
+                Error.Id = 1000;
+                Error.Message = "The problems happen!";
+                Error.Source = e.Message;
+                Response = Ok(new
+                {
+                    Error = Error
+                });
+            }
+
+            return Response;
         }
+
+
 
         [HttpGet("user/{id}")]
         public IQueryable GetUserAddresses(int id)
@@ -103,32 +151,39 @@ namespace CoreApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult GetAddressFromId(int id) {
+        public ActionResult GetAddressFromId(int id)
+        {
             ActionResult Response = Unauthorized();
             Error Error = new Error();
             List<Address> AddressItem = new List<Address>();
 
-            try {
-                AddressItem = _context.Address.Where( ad => ad.Id == id ).ToList();
+            try
+            {
+                AddressItem = _context.Address.Where(ad => ad.Id == id).ToList();
 
-                if(AddressItem.Any()) {
+                if (AddressItem.Any())
+                {
                     Error.Id = 100;
                     Error.Message = "Success!";
                 }
-                else {
+                else
+                {
                     Error.Id = 500;
                     Error.Message = "No Success! Please check your infomation that you sent!";
                 }
-                Response = Ok( new {
+                Response = Ok(new
+                {
                     Address = AddressItem,
                     Error = Error
                 });
             }
-            catch(Exception e) {
+            catch (Exception e)
+            {
                 Error.Id = 1000;
                 Error.Message = "Cannot add user! The problems happen!";
                 Error.Source = e.Message;
-                Response = Ok(new {
+                Response = Ok(new
+                {
                     Error = Error
                 });
             }
@@ -192,17 +247,19 @@ namespace CoreApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult  UpdateAddressFromId(int id, Address address)
+        public IActionResult UpdateAddressFromId(int id, Address address)
         {
             Error Error = new Error();
-            try {
+            try
+            {
                 var result = _context.Address.Find(id);
                 if (result != null)
                 {
                     Error.Id = 100;
                     Error.Message = "Success!";
                 }
-                else {
+                else
+                {
                     Error.Id = 500;
                     Error.Message = "No Success! Please check your infomation that you sent!";
                 }
@@ -213,14 +270,15 @@ namespace CoreApi.Controllers
 
                 _context.Address.Update(result);
                 _context.SaveChanges();
-                }
-            catch(Exception e) {
+            }
+            catch (Exception e)
+            {
                 Error.Id = 1000;
                 Error.Message = "The problems happen!";
                 Error.Source = e.Message;
             }
             return Ok();
             //return Ok(Error);
-        }  
+        }
     }
 }

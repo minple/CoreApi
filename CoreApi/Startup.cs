@@ -22,7 +22,7 @@ namespace CoreApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<CoreApiContext>(options => options.UseSqlServer(Configuration["ConnectionStringDXC"]));
+            services.AddDbContext<CoreApiContext>(options => options.UseSqlServer(Configuration["ConnectionString"]));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
