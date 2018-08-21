@@ -84,7 +84,7 @@ namespace CoreApi.Controllers
         }
 
         [HttpGet("page")]
-        public ActionResult<UsersData> GetUserPage([FromQuery(Name = "pageSize")] int PageSize, [FromQuery(Name = "pageNumber")] int PageNumber) {
+        public ActionResult<UsersData> GetUserPage([FromQuery(Name = "size")] int PageSize, [FromQuery(Name = "current")] int PageNumber) {
 
             ActionResult Response = Unauthorized();
             UsersData UsersData = new UsersData();

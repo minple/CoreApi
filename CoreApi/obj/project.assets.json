@@ -11536,11 +11536,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\nguyenphucliem\\Desktop\\DXC\\7.8\\CoreApi\\CoreApi.csproj",
+      "projectUniqueName": "c:\\Users\\nguyenphucliem\\Desktop\\Group\\CoreApiCore\\CoreApi\\CoreApi.csproj",
       "projectName": "CoreApi",
-      "projectPath": "C:\\Users\\nguyenphucliem\\Desktop\\DXC\\7.8\\CoreApi\\CoreApi.csproj",
+      "projectPath": "c:\\Users\\nguyenphucliem\\Desktop\\Group\\CoreApiCore\\CoreApi\\CoreApi.csproj",
       "packagesPath": "C:\\Users\\nguyenphucliem\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\nguyenphucliem\\Desktop\\DXC\\7.8\\CoreApi\\obj\\",
+      "outputPath": "c:\\Users\\nguyenphucliem\\Desktop\\Group\\CoreApiCore\\CoreApi\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

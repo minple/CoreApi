@@ -16,14 +16,14 @@ namespace CoreApi.Controllers {
             _context = contex;
         }
 
-        [HttpGet("city")]
-        public ActionResult GetDistricts([FromQuery(Name = "id")] int cityId) {
+        [HttpGet("city/{id}")]
+        public ActionResult GetDistricts(int id) {
             ActionResult Response = Unauthorized();
             Error Error = new Error();
             List<District> Districts = new List<District>();
 
             try {
-                Districts = _context.District.Where( dt => dt.CityId == cityId ).ToList();
+                Districts = _context.District.Where( dt => dt.CityId == id ).ToList();
 
                 if(Districts.Any()) {
                     Error.Id = 100;

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CoreApi.Controllers
 {
-    [Authorize(Roles = "admin")]
+    //[Authorize(Roles = "admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class AddressesController : ControllerBase
@@ -82,12 +82,13 @@ namespace CoreApi.Controllers
                                         u.Id == id
                                 select new
                                 {
+                                    id = a.Id,
                                     Street = a.Street,
-                                    AddressType = at.Name,
-                                    District = d.Name,
-                                    City = ci.Name,
-                                    Country = c.Name,
-                                    
+                                    addressType = at.Name,
+                                    district = d.Name,
+                                    city = ci.Name,
+                                    country = c.Name,
+
                                 };
             IQueryable userAddresses;
             userAddresses = from u in _context.Users
@@ -95,10 +96,44 @@ namespace CoreApi.Controllers
                             select new
                             {
                                 User = u,
-                                Address = result
+                                Addresses = result
                             };
 
             return userAddresses;
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult GetAddressFromId(int id) {
+            ActionResult Response = Unauthorized();
+            Error Error = new Error();
+            List<Address> AddressItem = new List<Address>();
+
+            try {
+                AddressItem = _context.Address.Where( ad => ad.Id == id ).ToList();
+
+                if(AddressItem.Any()) {
+                    Error.Id = 100;
+                    Error.Message = "Success!";
+                }
+                else {
+                    Error.Id = 500;
+                    Error.Message = "No Success! Please check your infomation that you sent!";
+                }
+                Response = Ok( new {
+                    Address = AddressItem,
+                    Error = Error
+                });
+            }
+            catch(Exception e) {
+                Error.Id = 1000;
+                Error.Message = "Cannot add user! The problems happen!";
+                Error.Source = e.Message;
+                Response = Ok(new {
+                    Error = Error
+                });
+            }
+            return Response;
+
         }
 
         [HttpPost]
@@ -111,7 +146,7 @@ namespace CoreApi.Controllers
 
             try
             {
-                List<int> AddressCurrentID = new List<int>(); ;
+                List<int> AddressCurrentID = new List<int>();
                 List<Address> Addresses = _userAddresses.Addresses;
                 foreach (var info in Addresses)
                 {
@@ -125,7 +160,6 @@ namespace CoreApi.Controllers
                 if (AddressCurrentID.Count() == 1)
                 {
                     _userAddresses.User.Address1 = AddressCurrentID[0];
-
                     _context.Users.Add(User);
                     _context.SaveChanges();
                 }
@@ -133,7 +167,6 @@ namespace CoreApi.Controllers
                 {
                     _userAddresses.User.Address1 = AddressCurrentID[0];
                     _userAddresses.User.Address2 = AddressCurrentID[1];
-
                     _context.Users.Add(User);
                     _context.SaveChanges();
                 }
@@ -157,5 +190,37 @@ namespace CoreApi.Controllers
             }
             return Response;
         }
+
+        [HttpPut("{id}")]
+        public IActionResult  UpdateAddressFromId(int id, Address address)
+        {
+            Error Error = new Error();
+            try {
+                var result = _context.Address.Find(id);
+                if (result != null)
+                {
+                    Error.Id = 100;
+                    Error.Message = "Success!";
+                }
+                else {
+                    Error.Id = 500;
+                    Error.Message = "No Success! Please check your infomation that you sent!";
+                }
+                result.CountryId = address.CountryId;
+                result.CityId = address.CityId;
+                result.DistrictId = address.DistrictId;
+                result.Street = address.Street;
+
+                _context.Address.Update(result);
+                _context.SaveChanges();
+                }
+            catch(Exception e) {
+                Error.Id = 1000;
+                Error.Message = "The problems happen!";
+                Error.Source = e.Message;
+            }
+            return Ok();
+            //return Ok(Error);
+        }  
     }
 }
