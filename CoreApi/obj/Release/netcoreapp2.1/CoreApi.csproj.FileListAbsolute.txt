@@ -1,0 +1,14 @@
+C:\Users\nguyenphucliem\Desktop\DXC\6.8\CoreApi\bin\Release\netcoreapp2.1\CoreApi.deps.json
+C:\Users\nguyenphucliem\Desktop\DXC\6.8\CoreApi\bin\Release\netcoreapp2.1\CoreApi.runtimeconfig.json
+C:\Users\nguyenphucliem\Desktop\DXC\6.8\CoreApi\bin\Release\netcoreapp2.1\CoreApi.runtimeconfig.dev.json
+C:\Users\nguyenphucliem\Desktop\DXC\6.8\CoreApi\bin\Release\netcoreapp2.1\CoreApi.dll
+C:\Users\nguyenphucliem\Desktop\DXC\6.8\CoreApi\bin\Release\netcoreapp2.1\CoreApi.pdb
+C:\Users\nguyenphucliem\Desktop\DXC\6.8\CoreApi\obj\Release\netcoreapp2.1\CoreApi.csprojAssemblyReference.cache
+C:\Users\nguyenphucliem\Desktop\DXC\6.8\CoreApi\obj\Release\netcoreapp2.1\CoreApi.csproj.CoreCompileInputs.cache
+C:\Users\nguyenphucliem\Desktop\DXC\6.8\CoreApi\obj\Release\netcoreapp2.1\CoreApi.RazorAssemblyInfo.cache
+C:\Users\nguyenphucliem\Desktop\DXC\6.8\CoreApi\obj\Release\netcoreapp2.1\CoreApi.RazorAssemblyInfo.cs
+C:\Users\nguyenphucliem\Desktop\DXC\6.8\CoreApi\obj\Release\netcoreapp2.1\CoreApi.AssemblyInfoInputs.cache
+C:\Users\nguyenphucliem\Desktop\DXC\6.8\CoreApi\obj\Release\netcoreapp2.1\CoreApi.AssemblyInfo.cs
+C:\Users\nguyenphucliem\Desktop\DXC\6.8\CoreApi\obj\Release\netcoreapp2.1\CoreApi.RazorTargetAssemblyInfo.cache
+C:\Users\nguyenphucliem\Desktop\DXC\6.8\CoreApi\obj\Release\netcoreapp2.1\CoreApi.dll
+C:\Users\nguyenphucliem\Desktop\DXC\6.8\CoreApi\obj\Release\netcoreapp2.1\CoreApi.pdb
