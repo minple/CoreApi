@@ -173,7 +173,7 @@ namespace CoreApi.Controllers
                 }
                 Response = Ok(new
                 {
-                    Address = AddressItem,
+                    Address = AddressItem.First(),
                     Error = Error
                 });
             }
