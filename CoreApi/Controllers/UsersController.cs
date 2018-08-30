@@ -33,7 +33,7 @@ namespace CoreApi.Controllers
                 var permissionCount = Int32.Parse(HttpContext.User.FindFirst("permissionCount").Value);
                 var userId = Int32.Parse(HttpContext.User.FindFirst("userId").Value);
 
-                if( permissionCount == 3  ){
+                if( permissionCount == 3 ){
                     UsersData.Users = _context.Users.OrderBy(x=>x.Id).Take(UsersData.Pagination.PageSize).ToList();
                 }
                 else {
@@ -82,7 +82,7 @@ namespace CoreApi.Controllers
         }
 
         [HttpGet("page")]
-        public ActionResult<UsersData> GetUserPage([FromQuery(Name = "size")] int PageSize, [FromQuery(Name = "current")] int PageNumber) {
+        public ActionResult<UsersData> GetUserPage([FromQuery(Name = "size")] int PageSize, [FromQuery(Name = "current")] int CurrentPage, [FromQuery(Name = "search")] string search) {
 
             ActionResult Response = Unauthorized();
             UsersData UsersData = new UsersData();
@@ -90,16 +90,46 @@ namespace CoreApi.Controllers
                 var permissionCount = Int32.Parse(HttpContext.User.FindFirst("permissionCount").Value);
 
                 if(permissionCount == 3) {
+
+                    //set pagination
                     if(PageSize > 20)
                         PageSize = 20;
+                    if(PageSize == 0)
+                        PageSize = UsersData.Pagination.PageSize;
+                    if(CurrentPage == 0)
+                        CurrentPage = UsersData.Pagination.CurrentPage;
+                    
                     UsersData.Pagination.PageSize = PageSize;
-                    UsersData.Pagination.PageNumber = PageNumber;
-                    UsersData.Pagination.TotalItems = _context.Users.Count();
+                    UsersData.Pagination.CurrentPage = CurrentPage;
+                    //. set pagination
+                    
+                    if(search != null) {
+                        bool isNumber = int.TryParse(search, out int searchId);
+                        if(isNumber) {
+                            UsersData.Users = _context.Users.Where(
+                                us => us.Id == searchId
+                            ).ToList();
+                            UsersData.Pagination = null;
+                        }
+                        else {
+                            UsersData.Users = _context.Users
+                                .OrderBy(x=>x.Id)
+                                .Where(
+                                    us => us.Name.Contains(search)
+                                )
+                                .Take(UsersData.Pagination.PageSize).ToList();
+                        }
+                    }
+                    else {
+                        var result =  (
+                            from X in _context.Users 
+                            orderby X.Id
+                            select X).Skip((CurrentPage-1)*PageSize).Take(PageSize);
 
-                    var result =  (from X in _context.Users orderby X.Id
-                    select X).Skip((PageNumber-1)*PageSize).Take(PageSize);
-
-                    UsersData.Users = result.ToList();
+                        UsersData.Users = result.ToList();
+                    }
+                    
+                    
                     Response = Ok(UsersData);
 
                     if(UsersData.Users.Any()) {

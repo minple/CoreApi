@@ -61,7 +61,7 @@ namespace CoreApi.Controllers
                 if (PageSize > 20)
                     PageSize = 20;
                 Pagination.PageSize = PageSize;
-                Pagination.PageNumber = CurrentPage;
+                Pagination.CurrentPage = CurrentPage;
                 Pagination.TotalItems = result.Count();
 
                 if (result.Count() > 0)
