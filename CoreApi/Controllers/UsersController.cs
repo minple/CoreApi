@@ -28,8 +28,6 @@ namespace CoreApi.Controllers
         [HttpGet(Name = "GetUsers")]
         public UsersData GetAll()
         {
-            //JwtBearerHandler
-            //var a = Authentication.JwtBearer.JwtBearerHandler[1];
             UsersData UsersData = new UsersData();
             try {
                 var permissionCount = Int32.Parse(HttpContext.User.FindFirst("permissionCount").Value);
@@ -126,6 +124,7 @@ namespace CoreApi.Controllers
             return Response;
         }
         
+        [Authorize(Roles = "admin")]
         [HttpGet("{id}")]
         public IActionResult GetUserFromId(int id) {
             UsersData UsersData = new UsersData();
@@ -167,7 +166,7 @@ namespace CoreApi.Controllers
            return Ok();
         }      
 
-
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
@@ -203,6 +202,7 @@ namespace CoreApi.Controllers
             return Ok(Usersdata);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPut("{id}")]
         public IActionResult  Update(int id, User user)
         {
