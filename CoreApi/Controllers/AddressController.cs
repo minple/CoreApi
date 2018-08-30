@@ -191,6 +191,66 @@ namespace CoreApi.Controllers
 
         }
 
+        [HttpPost("user/{id}")]
+        public ActionResult PostAddressOfUser([FromBody] Address address, int id)
+        {
+            ActionResult Response = Unauthorized();
+            Error Error = new Error();
+            
+            try
+            {
+                
+                int? AddressCurrentID = 0;
+                _context.Address.Add(address);
+                _context.SaveChanges();
+
+                AddressCurrentID = address.Id;
+
+                User user = _context.Users.Where(
+                                    us => us.Id == id
+                ).ToList().First();
+
+                if(user.Address1 == null) {
+                    user.Address1 = AddressCurrentID;
+                    _context.Users.Update(user);
+                    _context.SaveChanges();
+                }
+                else if(user.Address2 == null) {
+                    user.Address2 = AddressCurrentID;
+                    _context.Users.Update(user);
+                    _context.SaveChanges();
+                }
+                else {
+                    Error.Id = 500;
+                    Error.Message = "Not success! address1 & address2 is added, please update than add";
+                    Response = Ok(new
+                        {
+                            Error = Error
+                        });
+                }
+
+                Error.Id = 100;
+                Error.Message = "Success!";
+                Response = Ok(new
+                    {
+                        Address = address,
+                        Error = Error
+                    });
+            }
+            catch (Exception e)
+            {
+                Error.Id = 1000;
+                Error.Message = "Cannot add user! The problems happen!";
+                Error.Source = e.Message;
+                Response = Ok(new
+                {
+                    Error = Error
+                });
+            }
+            return Response;
+        }
+
+        //add user and addresses
         [HttpPost]
         public ActionResult PostUserAddresses([FromBody] UserAddresses _userAddresses)
         {
@@ -201,7 +261,7 @@ namespace CoreApi.Controllers
 
             try
             {
-                List<int> AddressCurrentID = new List<int>();
+                List<int?> AddressCurrentID = new List<int?>();
                 List<Address> Addresses = _userAddresses.Addresses;
                 foreach (var info in Addresses)
                 {
@@ -249,6 +309,7 @@ namespace CoreApi.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateAddressFromId(int id, Address address)
         {
+            IActionResult Response = BadRequest();
             Error Error = new Error();
             try
             {
@@ -263,12 +324,38 @@ namespace CoreApi.Controllers
                     Error.Id = 500;
                     Error.Message = "No Success! Please check your infomation that you sent!";
                 }
+                result.AddressTypeId = address.AddressTypeId;
                 result.CountryId = address.CountryId;
                 result.CityId = address.CityId;
                 result.DistrictId = address.DistrictId;
                 result.Street = address.Street;
 
                 _context.Address.Update(result);
+                _context.SaveChanges();
+
+                Response = Ok(Error);
+            }
+            catch (Exception e)
+            {
+                Error.Id = 1000;
+                Error.Message = "The problems happen!";
+                Error.Source = e.Message;
+                Response = BadRequest(Error);
+            }
+            return Response;
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteAddressFromId(int id)
+        {
+            Error Error = new Error();
+            try
+            {
+                var result = _context.Address.Find(id);
+                Error.Id = 100;
+                Error.Message = "Success!";
+
+                _context.Address.Remove(result);
                 _context.SaveChanges();
             }
             catch (Exception e)
@@ -277,8 +364,7 @@ namespace CoreApi.Controllers
                 Error.Message = "The problems happen!";
                 Error.Source = e.Message;
             }
-            return Ok();
-            //return Ok(Error);
+            return Ok(Error);
         }
     }
 }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 namespace CoreApi.DTO {
     public class Address
         {
-            public int Id { get; set; }
+            public int? Id { get; set; }
             public int AddressTypeId { get; set; }
             [Required]
             public int CountryId { get; set; }

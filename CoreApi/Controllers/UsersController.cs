@@ -218,8 +218,11 @@ namespace CoreApi.Controllers
                     Error.Id = 500;
                     Error.Message = "No Success! Please check your infomation that you sent!";
                 }
+                
                 result.Name = user.Name;
                 result.Password = user.Password;
+                result.Address1 = user.Address1;
+                result.Address2 = user.Address2;
 
                 _context.Users.Update(result);
                 _context.SaveChanges();
@@ -229,8 +232,7 @@ namespace CoreApi.Controllers
                 Error.Message = "The problems happen!";
                 Error.Source = e.Message;
             }
-            return Ok();
-            //return Ok(Error);
+            return Ok(Error);
         }  
     }
 }
