@@ -33,9 +33,8 @@ namespace CoreApi.Controllers
                 var permissionCount = Int32.Parse(HttpContext.User.FindFirst("permissionCount").Value);
                 var userId = Int32.Parse(HttpContext.User.FindFirst("userId").Value);
 
-                if( permissionCount == 3 ){
+                if( permissionCount == 3 )
                     UsersData.Users = _context.Users.OrderBy(x=>x.Id).Take(UsersData.Pagination.PageSize).ToList();
-                }
                 else {
                     User user = _context.Users.Find(userId);
                     UsersData.Users.Add(user);
@@ -117,7 +116,7 @@ namespace CoreApi.Controllers
                                 .Where(
                                     us => us.Name.Contains(search)
                                 )
-                                .Take(UsersData.Pagination.PageSize).ToList();
+                                .Skip((CurrentPage-1)*PageSize).Take(PageSize).ToList();
                         }
                     }
                     else {
