@@ -111,12 +111,14 @@ namespace CoreApi.Controllers
                             UsersData.Pagination = null;
                         }
                         else {
-                            UsersData.Users = _context.Users
+                            var result = _context.Users
                                 .OrderBy(x=>x.Id)
                                 .Where(
                                     us => us.Name.Contains(search)
-                                )
-                                .Skip((CurrentPage-1)*PageSize).Take(PageSize).ToList();
+                                );
+
+                            UsersData.Pagination.TotalItems = result.Count();
+                            UsersData.Users = result.Skip((CurrentPage-1)*PageSize).Take(PageSize).ToList();
                         }
                     }
                     else {
@@ -126,6 +128,7 @@ namespace CoreApi.Controllers
                             select X).Skip((CurrentPage-1)*PageSize).Take(PageSize);
 
                         UsersData.Users = result.ToList();
+                        UsersData.Pagination.TotalItems = _context.Users.Count();
                     }
                     
                     
