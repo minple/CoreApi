@@ -80,6 +80,7 @@ namespace CoreApi.Controllers
             return Response;
         }
 
+        [Authorize(Roles = "admin")]
         [HttpGet("page")]
         public ActionResult<UsersData> GetUserPage([FromQuery(Name = "size")] int PageSize, [FromQuery(Name = "current")] int CurrentPage, [FromQuery(Name = "search")] string search) {
 
@@ -87,7 +88,6 @@ namespace CoreApi.Controllers
             UsersData UsersData = new UsersData();
             try {
                 var permissionCount = Int32.Parse(HttpContext.User.FindFirst("permissionCount").Value);
-
                 if(permissionCount == 3) {
 
                     //set pagination
@@ -156,7 +156,7 @@ namespace CoreApi.Controllers
             return Response;
         }
         
-        [Authorize(Roles = "admin")]
+        
         [HttpGet("{id}")]
         public IActionResult GetUserFromId(int id) {
             UsersData UsersData = new UsersData();
