@@ -10,9 +10,9 @@ namespace CoreApi.Controllers {
     [Authorize(Roles="admin")]
     [Route("api/[controller]")]
     [ApiController]
-    public class AddressTypeController:ControllerBase {
+    public class AddressTypesController:ControllerBase {
         private readonly CoreApiContext _context;
-        public AddressTypeController(CoreApiContext contex) {
+        public AddressTypesController(CoreApiContext contex) {
             _context = contex;
         }
 
