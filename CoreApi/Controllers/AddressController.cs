@@ -263,12 +263,15 @@ namespace CoreApi.Controllers
             {
                 List<int?> AddressCurrentID = new List<int?>();
                 List<Address> Addresses = _userAddresses.Addresses;
+                // if(_userAddresses.Addresses[0] != null)
+                    // Addresses.pu
                 foreach (var info in Addresses)
                 {
-                    _context.Address.Add(info);
-                    _context.SaveChanges();
-
-                    AddressCurrentID.Add(info.Id);
+                    if(info != null) {
+                        _context.Address.Add(info);
+                        _context.SaveChanges();
+                        AddressCurrentID.Add(info.Id);
+                    }
                 }
 
                 User User = _userAddresses.User;
@@ -285,11 +288,16 @@ namespace CoreApi.Controllers
                     _context.Users.Add(User);
                     _context.SaveChanges();
                 }
+                else if(AddressCurrentID.Count() == 0) {
+                    _context.Users.Add(User);
+                    _context.SaveChanges();
+                }
 
                 Error.Id = 100;
                 Error.Message = "Success!";
                 Response = Ok(new
                 {
+                    userAddresses = _userAddresses,
                     Error = Error
                 });
             }
